@@ -1,0 +1,94 @@
+<!DOCTYPE html> 
+<html lang="br"> 
+  <head>
+    <title>Chat</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        ws = new WebSocket("ws://localhost:8080");
+        ws.onmessage = function(event) {
+          var data = event.data.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+          $('#log ul').append('<li>' + data + '</li>');
+        };
+        
+        var entry_el = $('#entry');
+        entry_el.keypress(function(event) {
+          if (event.keyCode != 13) return;
+          var msg = entry_el.attr('value');
+          if (msg) {
+            ws.send(msg);
+            entry_el.attr('value', '');
+            window.scrollBy(0, 1000000000000000);
+            entry_el.focus();
+          }
+        });
+        
+      });
+    </script>
+    <style type="text/css">
+* { margin, padding: 0; }
+      body {
+	    background: #474747 url(bg.png);
+}
+      #log {
+        margin-bottom: 100px;
+        width: 100%;
+
+      }
+      #log ul {
+        padding: 15px;
+        margin: 15px;
+		background-color: #222;
+			-webkit-box-shadow: 0px 2px 3px #555;
+			-moz-box-shadow: 0px 2px 3px #555;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+      }
+      #log ul li {
+
+        list-style-type: none;
+		font-size: 15px; color: #555; text-shadow: 0px 2px 3px #171717;
+      }
+
+      #console {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        font-size: 20px;
+
+      }
+      #console input {
+		width:50%;
+		background: #eee;
+		border: 3px solid #ccc;
+		color: #000;
+		font-size:20px;
+		margin: 4px 0 13px 0;
+		padding: 10px;
+		text-align: left; 
+
+
+		-webkit-box-shadow: 0px 2px 3px #555;
+		-moz-box-shadow: 0px 2px 3px #555;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;}
+    #console input:focus {
+			 background: #3860FF;
+			border: 3px solid #1241FF;	
+
+		}  
+	h1 {
+	font: 80px Tahoma, Helvetica, Arial, Sans-Serif;
+	text-align: center;
+	color: #222; text-shadow: 0px 2px 3px #555;
+	}
+    </style>
+  </head>
+  <body>
+    <h1><img src="logo2.png"> message.node</h1>
+    <div id="log"><ul></ul></div>
+    <div id="console">
+      <input type="text" id="entry" />
+    </div>
+  </body>
+</html>
